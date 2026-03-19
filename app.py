@@ -1,7 +1,12 @@
-# 3. Sidebar for Settings (Production Ready - No Manual Input)
+import os
+import streamlit as st
+from huggingface_hub import InferenceApi
 
+# -------------------------------
+# 1️⃣ Fetch API Key from Streamlit Secrets
+# -------------------------------
 def get_api_key():
-    """Fetch API key ONLY from Streamlit secrets."""
+    """Fetch Hugging Face API key ONLY from Streamlit secrets."""
     try:
         return st.secrets["HUGGING_FACE_API_KEY"]
     except KeyError:
@@ -9,6 +14,19 @@ def get_api_key():
 
 api_key = get_api_key()
 
+# -------------------------------
+# 2️⃣ Initialize Hugging Face API (Optional: can initialize later per model)
+# -------------------------------
+inference = None
+if api_key:
+    try:
+        inference = InferenceApi(repo_id="gpt2", token=api_key)  # default test model
+    except Exception as e:
+        st.error(f"Error connecting to Hugging Face: {e}")
+
+# -------------------------------
+# 3️⃣ Sidebar UI
+# -------------------------------
 with st.sidebar:
     # --- Founder Branding Section ---
     if os.path.exists("founder.png"):
@@ -55,3 +73,14 @@ with st.sidebar:
     )
 
     st.divider()
+
+# -------------------------------
+# 4️⃣ Example: Test AI Output
+# -------------------------------
+if inference:
+    try:
+        test_input = "Hello AI, can you generate a short introduction?"
+        output = inference(inputs=test_input)
+        st.write("**AI Test Output:**", output)
+    except Exception as e:
+        st.error(f"Error generating AI output: {e}")
