@@ -1,12 +1,13 @@
-# 3. Sidebar for Settings (Improved & Cleaner)
+# 3. Sidebar for Settings (Production Ready - No Manual Input)
 
 def get_api_key():
-    """Fetch API key from Streamlit secrets or environment variables."""
-    if "HUGGING_FACE_API_KEY" in st.secrets:
+    """Fetch API key ONLY from Streamlit secrets."""
+    try:
         return st.secrets["HUGGING_FACE_API_KEY"]
-    return os.getenv("HUGGING_FACE_API_KEY", "")
+    except KeyError:
+        return None
 
-default_api_key = get_api_key()
+api_key = get_api_key()
 
 with st.sidebar:
     # --- Founder Branding Section ---
@@ -34,20 +35,14 @@ with st.sidebar:
         </div>
         """, unsafe_allow_html=True)
 
-    # --- API Key Section ---
+    # --- Settings ---
     st.header("⚙️ Settings")
 
-    api_key = st.text_input(
-        "🔑 Hugging Face API Key",
-        value=default_api_key,
-        type="password",
-        placeholder="Enter your API key here..."
-    )
-
-    if not api_key:
-        st.warning("⚠️ API key required for AI features")
+    # ✅ Show status instead of input
+    if api_key:
+        st.success("✅ AI Connected")
     else:
-        st.success("✅ API Key Loaded")
+        st.error("❌ API Key Missing (Check Streamlit Secrets)")
 
     # --- Model Selection ---
     model_choice = st.selectbox(
