@@ -83,9 +83,9 @@ st.markdown("""
 
 # 3. Sidebar for Settings
 try:
-    default_api_key = st.secrets.get("HUGGING_FACE_API_KEY", os.environ.get("HUGGING_FACE_API_KEY", ""))
+    default_api_key = st.secrets.get("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", os.environ.get("HUGGING_FACE_API_KEY", ""))
 except Exception:
-    default_api_key = os.environ.get("HUGGING_FACE_API_KEY", "")
+    default_api_key = os.environ.get("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", "")
 
 with st.sidebar:
     # Founder Branding Section
